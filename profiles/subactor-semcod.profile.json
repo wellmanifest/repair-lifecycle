@@ -1,0 +1,20 @@
+{
+  "schema": "wellmanifest.repair/profile/v1",
+  "profileId": "repair://profile/subactor-semcod/code-repair",
+  "version": "1.0.0",
+  "ownership": {
+    "standardOwner": "wellmanifest/repair-lifecycle",
+    "runtimeOwner": "subactor/autonom",
+    "adopts": ["wellmanifest/autonomy", "wellmanifest/authority-lifecycle", "wellmanifest/validation-attestation", "wellmanifest/ticket-lifecycle"]
+  },
+  "bindings": [
+    {"stage": "observe", "uri": "subactor://process/twin-probes/observe", "principal": {"uri": "repair://principal/subactor-observer", "kind": "observer"}, "mode": "observe-only"},
+    {"stage": "diagnose", "uri": "subactor://process/doctor/diagnose", "principal": {"uri": "repair://principal/subactor-doctor", "kind": "observer"}, "mode": "analysis-only"},
+    {"stage": "authorize", "uri": "subactor://process/authority/repair", "principal": {"uri": "repair://principal/subactor-grant-service", "kind": "authority"}, "mode": "protected-authority"},
+    {"stage": "repair", "uri": "subactor://process/autonom/repair", "principal": {"uri": "repair://principal/subactor-coding-agent", "kind": "implementer"}, "mode": "bounded-write"},
+    {"stage": "validate", "uri": "subactor://process/validator/exact-head", "principal": {"uri": "repair://principal/subactor-validator-app", "kind": "validator"}, "mode": "candidate-read"},
+    {"stage": "publish", "uri": "subactor://process/pull-request/merge", "principal": {"uri": "repair://principal/subactor-pr-publisher", "kind": "publisher"}, "mode": "bounded-publish"},
+    {"stage": "readback", "uri": "subactor://process/eql/readback", "principal": {"uri": "repair://principal/subactor-readback", "kind": "observer"}, "mode": "effect-read"},
+    {"stage": "rollback", "uri": "subactor://process/repair/rollback", "principal": {"uri": "repair://principal/subactor-rollback", "kind": "service"}, "mode": "bounded-rollback"}
+  ]
+}

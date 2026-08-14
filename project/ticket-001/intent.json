@@ -1,0 +1,68 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-001",
+  "summary": "Define autonomous repair lifecycle standard",
+  "workstream": "integration",
+  "classification": {
+    "kind": "FEATURE",
+    "priority": "P0",
+    "origin": "requested"
+  },
+  "allowedPaths": [
+    "project/ticket-001/**", "TODO.md", "project/TICKETS.md",
+    "spec/**", "schemas/**", "profiles/**", "examples/**",
+    "src/**", "tests/**", "docs/**", "pyproject.toml"
+  ],
+  "forbiddenPaths": [
+    "project/ticket-*/user-*.md", ".governance/**", "AGENTS.md",
+    "README.md", "CHANGELOG.md", "VERSION", ".github/**", "project.sh",
+    "project.bat", "project/governance-check.*", "project/new-ticket.sh",
+    "project/readme.sh", "scripts/runtime.sh"
+  ],
+  "stacks": ["python"],
+  "dependsOn": [],
+  "conflictsWith": [],
+  "integrationTicket": null,
+  "delivery": {
+    "acceptedBaseSha": "d9afeba2b5bc27e3215a946a28e497ec861b874e",
+    "targetBranch": "main",
+    "outcome": "A deterministic repair lifecycle in which diagnosis never grants mutation and completion requires independent validation plus observed effect read-back.",
+    "nonGoals": [
+      "Implement a repair agent, scheduler, queue, GitHub App or deployment runtime",
+      "Execute model-generated shell commands or patches directly",
+      "Treat diagnosis, tests, PR approval or merge as proof of resolved effect",
+      "Permit implementer self-validation, direct-main publication or scope expansion",
+      "Merge this standard without independent current-head approval"
+    ],
+    "complexity": "L",
+    "estimatedMinutes": 30,
+    "budgets": {"maxImplementationFiles": 15, "maxAffectedComponents": 5, "maxPublicInterfaceChanges": 3, "maxRuntimeDependencies": 0},
+    "architecture": {
+      "status": "accepted",
+      "decision": "Standardize repair as an evidence-bound state machine with distinct diagnostic, authority, implementation, validation, publication, read-back and rollback facts.",
+      "components": [
+        {"name": "normative-contracts", "paths": ["spec/**", "schemas/**", "profiles/**"]},
+        {"name": "conformance", "paths": ["examples/**", "src/**", "tests/**", "pyproject.toml"]},
+        {"name": "guidance", "paths": ["docs/**"]}
+      ],
+      "responsibilityChanges": false,
+      "interfaceChanges": [
+        "Introduce wellmanifest.repair/case/v1",
+        "Introduce wellmanifest.repair/profile/v1",
+        "Define exact-candidate effect-read-back completion semantics"
+      ],
+      "dataChanges": [
+        "Separate diagnostic evidence from repair authority",
+        "Bind lifecycle transitions to immutable receipts and required artifacts"
+      ],
+      "ui": {"impact": "none", "states": [], "evidence": []},
+      "rollback": "Remove ticket-owned implementation paths while preserving the governed baseline."
+    },
+    "runtimeDependencies": [],
+    "validation": [
+      {"criterion": "AC-09", "commands": ["python3 -m unittest discover -s tests -v"], "evidence": "project/ticket-001/ai-codex-logs.txt"},
+      {"criterion": "AC-06", "commands": ["python3 src/repair_check.py self-test"], "evidence": "project/ticket-001/ai-codex-logs.txt"},
+      {"criterion": "AC-11", "commands": ["./project/governance-check.sh --actor agent", "python3 -m compileall -q src tests", "ruff check src tests"], "evidence": "project/ticket-001/ai-codex-logs.txt"}
+    ]
+  }
+}
