@@ -15,3 +15,12 @@ All checks passed!
 
 ./project/governance-check.sh --actor agent
 GOV-PASS: passed (0 errors, 0 warnings)
+
+2026-08-14 independent publication readback
+
+Validator run/job: 31813268528 / 94808957111 (success)
+Review: 4938616661 by ifuri-validator-agent[bot]
+Reviewed head: 49e0674f2dac41524a2b9be5d271061f1ce33beb
+Merge: 30e5a55c6bde8144f905254b27470480716e2027 by ifuri-validator-agent[bot]
+Reviewed and integrated tree: 6cd9d9dd2a3e92b36b6e0dc59318d5a1ead68860
+Remote ticket branch: absent
