@@ -1,0 +1,197 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://wellmanifest.dev/schemas/repair-lifecycle/v1",
+  "title": "Wellmanifest Repair Lifecycle",
+  "oneOf": [{"$ref": "#/$defs/case"}, {"$ref": "#/$defs/profile"}],
+  "$defs": {
+    "digest": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"},
+    "sha": {"type": "string", "pattern": "^[a-f0-9]{40}$"},
+    "principal": {
+      "type": "object", "additionalProperties": false,
+      "required": ["uri", "kind"],
+      "properties": {
+        "uri": {"type": "string", "pattern": "^repair://principal/[a-z0-9][a-z0-9._/-]*$"},
+        "kind": {"enum": ["observer", "authority", "implementer", "validator", "publisher", "service"]}
+      }
+    },
+    "receipt": {
+      "type": "object", "additionalProperties": false,
+      "required": ["receiptId", "actor", "at", "correlationId", "subjectDigest"],
+      "properties": {
+        "receiptId": {"type": "string", "pattern": "^repair://receipt/[a-z0-9][a-z0-9._/-]*$"},
+        "actor": {"$ref": "#/$defs/principal"},
+        "at": {"type": "string", "format": "date-time"},
+        "correlationId": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._:-]{7,127}$"},
+        "subjectDigest": {"$ref": "#/$defs/digest"}
+      }
+    },
+    "problem": {
+      "type": "object", "additionalProperties": false,
+      "required": ["diagnosticId", "sourceUri", "observationOnly", "observedAt", "componentUri", "symptomDigest", "evidenceDigests", "severity"],
+      "properties": {
+        "diagnosticId": {"type": "string", "pattern": "^repair://diagnostic/[a-z0-9][a-z0-9._/-]*$"},
+        "sourceUri": {"type": "string", "pattern": "^subactor://process/[a-z0-9][a-z0-9._/-]*$"},
+        "observationOnly": {"const": true},
+        "observedAt": {"type": "string", "format": "date-time"},
+        "componentUri": {"type": "string", "pattern": "^subactor://component/[a-z0-9][a-z0-9._/-]*$"},
+        "symptomDigest": {"$ref": "#/$defs/digest"},
+        "evidenceDigests": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/digest"}},
+        "severity": {"enum": ["low", "medium", "high", "critical"]}
+      }
+    },
+    "authority": {
+      "type": "object", "additionalProperties": false,
+      "required": ["grantDigest", "policyDigest", "requestedEffect", "componentOwner", "implementer", "validator", "publisher"],
+      "properties": {
+        "grantDigest": {"$ref": "#/$defs/digest"},
+        "policyDigest": {"$ref": "#/$defs/digest"},
+        "requestedEffect": {"const": "repair.apply"},
+        "componentOwner": {"$ref": "#/$defs/principal"},
+        "implementer": {"$ref": "#/$defs/principal"},
+        "validator": {"$ref": "#/$defs/principal"},
+        "publisher": {"$ref": "#/$defs/principal"}
+      }
+    },
+    "scope": {
+      "type": "object", "additionalProperties": false,
+      "required": ["repository", "baseSha", "allowedPaths", "forbiddenPaths", "maxFiles", "maxAttempts", "rollbackRequired"],
+      "properties": {
+        "repository": {"type": "string", "pattern": "^[a-z0-9_.-]+/[a-z0-9_.-]+$"},
+        "baseSha": {"$ref": "#/$defs/sha"},
+        "allowedPaths": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1, "maxLength": 240}},
+        "forbiddenPaths": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1, "maxLength": 240}},
+        "maxFiles": {"type": "integer", "minimum": 1, "maximum": 100},
+        "maxAttempts": {"type": "integer", "minimum": 1, "maximum": 20},
+        "rollbackRequired": {"const": true}
+      }
+    },
+    "transition": {
+      "type": "object", "additionalProperties": false,
+      "required": ["from", "to", "receipt"],
+      "properties": {
+        "from": {"type": ["string", "null"]},
+        "to": {"enum": ["observed", "diagnosed", "authorized", "repairing", "candidate", "validating", "publishing", "verifying", "resolved", "blocked", "rolled-back", "abandoned"]},
+        "receipt": {"$ref": "#/$defs/receipt"}
+      }
+    },
+    "lifecycle": {
+      "type": "object", "additionalProperties": false,
+      "required": ["state", "attempt", "history"],
+      "properties": {
+        "state": {"enum": ["observed", "diagnosed", "authorized", "repairing", "candidate", "validating", "publishing", "verifying", "resolved", "blocked", "rolled-back", "abandoned"]},
+        "attempt": {"type": "integer", "minimum": 1},
+        "history": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/transition"}}
+      }
+    },
+    "check": {
+      "type": "object", "additionalProperties": false,
+      "required": ["name", "conclusion", "profileDigest", "evidenceDigest"],
+      "properties": {
+        "name": {"type": "string", "pattern": "^[a-z][a-z0-9._/-]{1,100}$"},
+        "conclusion": {"enum": ["success", "failure", "skipped", "cancelled"]},
+        "profileDigest": {"$ref": "#/$defs/digest"},
+        "evidenceDigest": {"$ref": "#/$defs/digest"}
+      }
+    },
+    "candidate": {
+      "type": "object", "additionalProperties": false,
+      "required": ["headSha", "changeDigest", "changedPaths", "worktreeReceiptDigest", "checks"],
+      "properties": {
+        "headSha": {"$ref": "#/$defs/sha"},
+        "changeDigest": {"$ref": "#/$defs/digest"},
+        "changedPaths": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1, "maxLength": 240}},
+        "worktreeReceiptDigest": {"$ref": "#/$defs/digest"},
+        "checks": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/check"}}
+      }
+    },
+    "validation": {
+      "type": "object", "additionalProperties": false,
+      "required": ["validator", "candidateSha", "outcome", "evidenceDigest", "attestedAt"],
+      "properties": {
+        "validator": {"$ref": "#/$defs/principal"},
+        "candidateSha": {"$ref": "#/$defs/sha"},
+        "outcome": {"enum": ["approved", "rejected"]},
+        "evidenceDigest": {"$ref": "#/$defs/digest"},
+        "attestedAt": {"type": "string", "format": "date-time"}
+      }
+    },
+    "publication": {
+      "type": "object", "additionalProperties": false,
+      "required": ["publisher", "candidateSha", "status", "mergeSha", "receipt"],
+      "properties": {
+        "publisher": {"$ref": "#/$defs/principal"},
+        "candidateSha": {"$ref": "#/$defs/sha"},
+        "status": {"enum": ["pending", "merged", "failed"]},
+        "mergeSha": {"type": ["string", "null"], "pattern": "^[a-f0-9]{40}$"},
+        "receipt": {"$ref": "#/$defs/receipt"}
+      }
+    },
+    "readback": {
+      "type": "object", "additionalProperties": false,
+      "required": ["observer", "integratedSha", "effectConfirmed", "evidenceDigest", "observedAt"],
+      "properties": {
+        "observer": {"$ref": "#/$defs/principal"},
+        "integratedSha": {"$ref": "#/$defs/sha"},
+        "effectConfirmed": {"type": "boolean"},
+        "evidenceDigest": {"$ref": "#/$defs/digest"},
+        "observedAt": {"type": "string", "format": "date-time"}
+      }
+    },
+    "rollback": {
+      "type": "object", "additionalProperties": false,
+      "required": ["planDigest", "status", "receipt"],
+      "properties": {
+        "planDigest": {"$ref": "#/$defs/digest"},
+        "status": {"enum": ["not-needed", "executed", "failed"]},
+        "receipt": {"oneOf": [{"$ref": "#/$defs/receipt"}, {"type": "null"}]}
+      }
+    },
+    "case": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema", "repairId", "correlationId", "problem", "authority", "scope", "lifecycle", "candidate", "validation", "publication", "readback", "rollback"],
+      "properties": {
+        "schema": {"const": "wellmanifest.repair/case/v1"},
+        "repairId": {"type": "string", "pattern": "^repair://case/[a-z0-9][a-z0-9._/-]*$"},
+        "correlationId": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._:-]{7,127}$"},
+        "problem": {"$ref": "#/$defs/problem"},
+        "authority": {"$ref": "#/$defs/authority"},
+        "scope": {"$ref": "#/$defs/scope"},
+        "lifecycle": {"$ref": "#/$defs/lifecycle"},
+        "candidate": {"oneOf": [{"$ref": "#/$defs/candidate"}, {"type": "null"}]},
+        "validation": {"oneOf": [{"$ref": "#/$defs/validation"}, {"type": "null"}]},
+        "publication": {"oneOf": [{"$ref": "#/$defs/publication"}, {"type": "null"}]},
+        "readback": {"oneOf": [{"$ref": "#/$defs/readback"}, {"type": "null"}]},
+        "rollback": {"$ref": "#/$defs/rollback"}
+      }
+    },
+    "binding": {
+      "type": "object", "additionalProperties": false,
+      "required": ["stage", "uri", "principal", "mode"],
+      "properties": {
+        "stage": {"enum": ["observe", "diagnose", "authorize", "repair", "validate", "publish", "readback", "rollback"]},
+        "uri": {"type": "string", "pattern": "^subactor://process/[a-z0-9][a-z0-9._/-]*$"},
+        "principal": {"$ref": "#/$defs/principal"},
+        "mode": {"enum": ["observe-only", "analysis-only", "protected-authority", "bounded-write", "candidate-read", "bounded-publish", "effect-read", "bounded-rollback"]}
+      }
+    },
+    "profile": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schema", "profileId", "version", "ownership", "bindings"],
+      "properties": {
+        "schema": {"const": "wellmanifest.repair/profile/v1"},
+        "profileId": {"type": "string", "pattern": "^repair://profile/[a-z0-9][a-z0-9._/-]*$"},
+        "version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+        "ownership": {
+          "type": "object", "additionalProperties": false,
+          "required": ["standardOwner", "runtimeOwner", "adopts"],
+          "properties": {
+            "standardOwner": {"const": "wellmanifest/repair-lifecycle"},
+            "runtimeOwner": {"type": "string", "pattern": "^(subactor|semcod)/[a-z0-9][a-z0-9._/-]*$"},
+            "adopts": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^wellmanifest/[a-z0-9][a-z0-9._/-]*$"}}
+          }
+        },
+        "bindings": {"type": "array", "minItems": 8, "maxItems": 8, "items": {"$ref": "#/$defs/binding"}}
+      }
+    }
+  }
+}

@@ -27,6 +27,11 @@ represented by a separate exact receipt.
 - Initialized the bounded ticket and recorded SESSION_EXECUTION_AUTHORIZATION
   from the request to execute this work.
 - Bound implementation to the immutable seed baseline and integration paths.
+- Defined problem, grant, bounded scope, lifecycle, candidate, validation,
+  publication, read-back and rollback contracts.
+- Enforced exact candidate bindings, principal separation, path/file/attempt
+  budgets, receipt continuity and false-done prevention.
+- Added two adversarial fixtures and seventeen unit tests; all local gates pass.
 
 ## Blockers
 

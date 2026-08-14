@@ -1,0 +1,83 @@
+{
+  "schema": "wellmanifest.repair/case/v1",
+  "repairId": "repair://case/subactor/autonom-042",
+  "correlationId": "subactor-repair-042",
+  "problem": {
+    "diagnosticId": "repair://diagnostic/subactor/autonom-042",
+    "sourceUri": "subactor://process/twin-probes/observe",
+    "observationOnly": true,
+    "observedAt": "2026-08-14T10:00:00Z",
+    "componentUri": "subactor://component/autonom/pr-controller",
+    "symptomDigest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+    "evidenceDigests": ["sha256:2222222222222222222222222222222222222222222222222222222222222222"],
+    "severity": "high"
+  },
+  "authority": {
+    "grantDigest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+    "policyDigest": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+    "requestedEffect": "repair.apply",
+    "componentOwner": {"uri": "repair://principal/subactor-grant-service", "kind": "authority"},
+    "implementer": {"uri": "repair://principal/subactor-coding-agent", "kind": "implementer"},
+    "validator": {"uri": "repair://principal/subactor-validator-app", "kind": "validator"},
+    "publisher": {"uri": "repair://principal/subactor-pr-publisher", "kind": "publisher"}
+  },
+  "scope": {
+    "repository": "subactor/autonom",
+    "baseSha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "allowedPaths": ["autonom/**", "tests/**"],
+    "forbiddenPaths": [".github/**", ".governance/**", "secrets/**"],
+    "maxFiles": 5,
+    "maxAttempts": 3,
+    "rollbackRequired": true
+  },
+  "lifecycle": {
+    "state": "resolved",
+    "attempt": 1,
+    "history": [
+      {"from": null, "to": "observed", "receipt": {"receiptId": "repair://receipt/subactor/042-observed", "actor": {"uri": "repair://principal/subactor-observer", "kind": "observer"}, "at": "2026-08-14T10:00:00Z", "correlationId": "subactor-repair-042", "subjectDigest": "sha256:0101010101010101010101010101010101010101010101010101010101010101"}},
+      {"from": "observed", "to": "diagnosed", "receipt": {"receiptId": "repair://receipt/subactor/042-diagnosed", "actor": {"uri": "repair://principal/subactor-doctor", "kind": "observer"}, "at": "2026-08-14T10:05:00Z", "correlationId": "subactor-repair-042", "subjectDigest": "sha256:0202020202020202020202020202020202020202020202020202020202020202"}},
+      {"from": "diagnosed", "to": "authorized", "receipt": {"receiptId": "repair://receipt/subactor/042-authorized", "actor": {"uri": "repair://principal/subactor-grant-service", "kind": "authority"}, "at": "2026-08-14T10:06:00Z", "correlationId": "subactor-repair-042", "subjectDigest": "sha256:0303030303030303030303030303030303030303030303030303030303030303"}},
+      {"from": "authorized", "to": "repairing", "receipt": {"receiptId": "repair://receipt/subactor/042-repairing", "actor": {"uri": "repair://principal/subactor-coding-agent", "kind": "implementer"}, "at": "2026-08-14T10:07:00Z", "correlationId": "subactor-repair-042", "subjectDigest": "sha256:0404040404040404040404040404040404040404040404040404040404040404"}},
+      {"from": "repairing", "to": "candidate", "receipt": {"receiptId": "repair://receipt/subactor/042-candidate", "actor": {"uri": "repair://principal/subactor-coding-agent", "kind": "implementer"}, "at": "2026-08-14T10:20:00Z", "correlationId": "subactor-repair-042", "subjectDigest": "sha256:0505050505050505050505050505050505050505050505050505050505050505"}},
+      {"from": "candidate", "to": "validating", "receipt": {"receiptId": "repair://receipt/subactor/042-validating", "actor": {"uri": "repair://principal/subactor-validator-app", "kind": "validator"}, "at": "2026-08-14T10:21:00Z", "correlationId": "subactor-repair-042", "subjectDigest": "sha256:0606060606060606060606060606060606060606060606060606060606060606"}},
+      {"from": "validating", "to": "publishing", "receipt": {"receiptId": "repair://receipt/subactor/042-publishing", "actor": {"uri": "repair://principal/subactor-validator-app", "kind": "validator"}, "at": "2026-08-14T10:25:00Z", "correlationId": "subactor-repair-042", "subjectDigest": "sha256:0707070707070707070707070707070707070707070707070707070707070707"}},
+      {"from": "publishing", "to": "verifying", "receipt": {"receiptId": "repair://receipt/subactor/042-verifying", "actor": {"uri": "repair://principal/subactor-pr-publisher", "kind": "publisher"}, "at": "2026-08-14T10:27:00Z", "correlationId": "subactor-repair-042", "subjectDigest": "sha256:0808080808080808080808080808080808080808080808080808080808080808"}},
+      {"from": "verifying", "to": "resolved", "receipt": {"receiptId": "repair://receipt/subactor/042-resolved", "actor": {"uri": "repair://principal/subactor-readback", "kind": "observer"}, "at": "2026-08-14T10:30:00Z", "correlationId": "subactor-repair-042", "subjectDigest": "sha256:0909090909090909090909090909090909090909090909090909090909090909"}}
+    ]
+  },
+  "candidate": {
+    "headSha": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "changeDigest": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+    "changedPaths": ["autonom/pull_request_controller.py", "tests/test_pull_request_controller.py"],
+    "worktreeReceiptDigest": "sha256:6666666666666666666666666666666666666666666666666666666666666666",
+    "checks": [
+      {"name": "unit", "conclusion": "success", "profileDigest": "sha256:7777777777777777777777777777777777777777777777777777777777777777", "evidenceDigest": "sha256:8888888888888888888888888888888888888888888888888888888888888888"}
+    ]
+  },
+  "validation": {
+    "validator": {"uri": "repair://principal/subactor-validator-app", "kind": "validator"},
+    "candidateSha": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "outcome": "approved",
+    "evidenceDigest": "sha256:9999999999999999999999999999999999999999999999999999999999999999",
+    "attestedAt": "2026-08-14T10:25:00Z"
+  },
+  "publication": {
+    "publisher": {"uri": "repair://principal/subactor-pr-publisher", "kind": "publisher"},
+    "candidateSha": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "status": "merged",
+    "mergeSha": "cccccccccccccccccccccccccccccccccccccccc",
+    "receipt": {"receiptId": "repair://receipt/subactor/042-merged", "actor": {"uri": "repair://principal/subactor-pr-publisher", "kind": "publisher"}, "at": "2026-08-14T10:27:00Z", "correlationId": "subactor-repair-042", "subjectDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}
+  },
+  "readback": {
+    "observer": {"uri": "repair://principal/subactor-readback", "kind": "observer"},
+    "integratedSha": "cccccccccccccccccccccccccccccccccccccccc",
+    "effectConfirmed": true,
+    "evidenceDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "observedAt": "2026-08-14T10:30:00Z"
+  },
+  "rollback": {
+    "planDigest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "status": "not-needed",
+    "receipt": null
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "schema": "wellmanifest.repair/invalid-case/v1",
+  "base": "../valid/subactor-resolved-repair.json",
+  "mutations": [
+    {"op": "replace", "path": "/readback/effectConfirmed", "value": false}
+  ],
+  "expectedCodes": ["REPAIR-READBACK-001"]
+}
