@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://wellmanifest.dev/schemas/repair-lifecycle/v1",
+  "$id": "https://wellmanifest.com/schemas/repair-lifecycle/v1",
   "title": "Wellmanifest Repair Lifecycle",
   "oneOf": [{"$ref": "#/$defs/case"}, {"$ref": "#/$defs/profile"}],
   "$defs": {
