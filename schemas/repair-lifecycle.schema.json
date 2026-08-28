@@ -93,14 +93,25 @@
         "evidenceDigest": {"$ref": "#/$defs/digest"}
       }
     },
+    "validationEnvironment": {
+      "type": "object", "additionalProperties": false,
+      "required": ["profileDigest", "dependencyDigest", "setupEvidenceDigest", "ready"],
+      "properties": {
+        "profileDigest": {"$ref": "#/$defs/digest"},
+        "dependencyDigest": {"$ref": "#/$defs/digest"},
+        "setupEvidenceDigest": {"$ref": "#/$defs/digest"},
+        "ready": {"const": true}
+      }
+    },
     "candidate": {
       "type": "object", "additionalProperties": false,
-      "required": ["headSha", "changeDigest", "changedPaths", "worktreeReceiptDigest", "checks"],
+      "required": ["headSha", "changeDigest", "changedPaths", "worktreeReceiptDigest", "environment", "checks"],
       "properties": {
         "headSha": {"$ref": "#/$defs/sha"},
         "changeDigest": {"$ref": "#/$defs/digest"},
         "changedPaths": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1, "maxLength": 240}},
         "worktreeReceiptDigest": {"$ref": "#/$defs/digest"},
+        "environment": {"$ref": "#/$defs/validationEnvironment"},
         "checks": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/check"}}
       }
     },

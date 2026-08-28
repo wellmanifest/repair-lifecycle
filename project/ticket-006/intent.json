@@ -1,0 +1,66 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-006",
+  "summary": "Bind repair validation to a reproducible environment",
+  "workstream": "integration",
+  "classification": {
+    "kind": "BUG",
+    "priority": "P1",
+    "origin": "regression"
+  },
+  "allowedPaths": [
+    "project/ticket-006/**", "TODO.md", "project/TICKETS.md",
+    "spec/**", "schemas/**", "examples/**", "src/**", "tests/**", "docs/**"
+  ],
+  "forbiddenPaths": [
+    "project/ticket-*/user-*.md", ".governance/**", "AGENTS.md",
+    "README.md", "CHANGELOG.md", "VERSION", ".github/**"
+  ],
+  "stacks": ["python"],
+  "dependsOn": [],
+  "conflictsWith": [],
+  "integrationTicket": null,
+  "delivery": {
+    "acceptedBaseSha": "83752f10b673f9052ae8824878e3c6c12f32465c",
+    "targetBranch": "main",
+    "outcome": "A repair candidate cannot be approved unless its checks are bound to a declared, ready and digest-addressed validation environment.",
+    "nonGoals": [
+      "Standardize Make targets, package managers or dependency installation commands",
+      "Move Doctor, Repair or Validator runtime ownership into Wellmanifest",
+      "Treat environment readiness as independent validation or effect read-back"
+    ],
+    "complexity": "M",
+    "estimatedMinutes": 25,
+    "budgets": {
+      "maxImplementationFiles": 9,
+      "maxAffectedComponents": 3,
+      "maxPublicInterfaceChanges": 2,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Add a closed validation-environment artifact to each candidate and require every deterministic check to bind its profile digest.",
+      "components": [
+        {"name": "normative-contract", "paths": ["spec/**", "schemas/**"]},
+        {"name": "conformance", "paths": ["examples/**", "src/**", "tests/**"]},
+        {"name": "guidance", "paths": ["docs/**"]}
+      ],
+      "responsibilityChanges": false,
+      "interfaceChanges": [
+        "Require candidate.environment in wellmanifest.repair/case/v1",
+        "Require each candidate check profileDigest to match its environment"
+      ],
+      "dataChanges": [
+        "Record validation profile, resolved dependency and setup evidence digests"
+      ],
+      "ui": {"impact": "none", "states": [], "evidence": []},
+      "rollback": "Revert ticket-006 before downstream adopters emit the required environment artifact."
+    },
+    "runtimeDependencies": [],
+    "validation": [
+      {"criterion": "AC-04", "commands": ["python3 -m unittest discover -s tests -v"], "evidence": "project/ticket-006/ai-codex-logs.txt"},
+      {"criterion": "AC-05", "commands": ["python3 src/repair_check.py self-test", "python3 -m compileall -q src tests", "ruff check src tests"], "evidence": "project/ticket-006/ai-codex-logs.txt"},
+      {"criterion": "AC-06", "commands": ["./project/governance-check.sh --actor agent --base 83752f10b673f9052ae8824878e3c6c12f32465c --head HEAD"], "evidence": "project/ticket-006/ai-codex-logs.txt"}
+    ]
+  }
+}

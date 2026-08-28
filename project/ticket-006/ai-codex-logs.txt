@@ -1,0 +1,27 @@
+2026-08-28 validation-environment conformance
+
+python3 -m unittest discover -s tests -v
+Ran 19 tests in 0.027s
+OK
+
+python3 src/repair_check.py self-test
+REPAIR-PASS: valid fixtures and declared negative findings passed
+
+python3 JSON Schema Draft 2020-12 validation
+JSON-SCHEMA-PASS
+
+python3 -m compileall -q src tests
+exit 0
+
+ruff check src tests
+All checks passed!
+
+./project/governance-check.sh --actor agent --base 83752f10b673f9052ae8824878e3c6c12f32465c --head HEAD
+GOV-PASS: passed (0 errors, 0 warnings)
+
+Production motivation and read-back:
+- Subactor Repair run 33151821532 produced an applicable patch but exposed an
+  undeclared validation dependency environment in if-uri/urirun.
+- if-uri/urirun PR #4 integrated as
+  9a5596fd5441f86ed184b194041748439650ee97.
+- CI, host examples, Docker examples and 623 clean-clone Python tests passed.

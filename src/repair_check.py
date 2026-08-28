@@ -22,6 +22,7 @@ SEPARATION = "REPAIR-SEPARATION-001"
 SCOPE = "REPAIR-SCOPE-001"
 STATE = "REPAIR-STATE-001"
 CANDIDATE = "REPAIR-CANDIDATE-001"
+ENVIRONMENT = "REPAIR-ENVIRONMENT-001"
 VALIDATION = "REPAIR-VALIDATION-001"
 PUBLICATION = "REPAIR-PUBLICATION-001"
 READBACK = "REPAIR-READBACK-001"
@@ -335,7 +336,10 @@ def _validate_candidate(
 ) -> dict[str, Any] | None:
     if value is None:
         return None
-    fields = {"headSha", "changeDigest", "changedPaths", "worktreeReceiptDigest", "checks"}
+    fields = {
+        "headSha", "changeDigest", "changedPaths", "worktreeReceiptDigest",
+        "environment", "checks",
+    }
     candidate = _closed(value, "/candidate", fields, fields, findings)
     if candidate is None:
         return None
@@ -358,6 +362,31 @@ def _validate_candidate(
                 _add(findings, SCOPE, f"/candidate/changedPaths/{index}", "path is outside scope")
             elif any(_matches(path, pattern) for pattern in forbidden):
                 _add(findings, SCOPE, f"/candidate/changedPaths/{index}", "path is forbidden")
+    environment_fields = {
+        "profileDigest", "dependencyDigest", "setupEvidenceDigest", "ready",
+    }
+    environment = _closed(
+        candidate.get("environment"),
+        "/candidate/environment",
+        environment_fields,
+        environment_fields,
+        findings,
+    ) or {}
+    for field in ("profileDigest", "dependencyDigest", "setupEvidenceDigest"):
+        _digest(
+            environment.get(field),
+            f"/candidate/environment/{field}",
+            findings,
+            ENVIRONMENT,
+        )
+    if environment.get("ready") is not True:
+        _add(
+            findings,
+            ENVIRONMENT,
+            "/candidate/environment/ready",
+            "validation environment must be ready before candidate checks",
+        )
+
     checks = candidate.get("checks")
     if not isinstance(checks, list) or not checks:
         _add(findings, CANDIDATE, "/candidate/checks", "candidate checks required")
@@ -376,6 +405,13 @@ def _validate_candidate(
                     _add(findings, CANDIDATE, f"{path}/conclusion", "all checks must succeed")
                 _digest(check.get("profileDigest"), f"{path}/profileDigest", findings, CANDIDATE)
                 _digest(check.get("evidenceDigest"), f"{path}/evidenceDigest", findings, CANDIDATE)
+                if check.get("profileDigest") != environment.get("profileDigest"):
+                    _add(
+                        findings,
+                        ENVIRONMENT,
+                        f"{path}/profileDigest",
+                        "check profile must match the prepared validation environment",
+                    )
     return candidate
 
 

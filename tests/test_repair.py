@@ -70,6 +70,19 @@ class RepairConformanceTests(unittest.TestCase):
         mutation["candidate"]["checks"][0]["conclusion"] = "skipped"
         self.assertIn(repair_check.CANDIDATE, self.codes(mutation))
 
+    def test_candidate_requires_a_ready_validation_environment(self) -> None:
+        mutation = copy.deepcopy(self.valid)
+        del mutation["candidate"]["environment"]
+        self.assertIn(repair_check.SYNTAX, self.codes(mutation))
+        mutation = copy.deepcopy(self.valid)
+        mutation["candidate"]["environment"]["ready"] = False
+        self.assertIn(repair_check.ENVIRONMENT, self.codes(mutation))
+
+    def test_candidate_checks_bind_the_environment_profile(self) -> None:
+        mutation = copy.deepcopy(self.valid)
+        mutation["candidate"]["checks"][0]["profileDigest"] = "sha256:" + "f" * 64
+        self.assertIn(repair_check.ENVIRONMENT, self.codes(mutation))
+
     def test_validation_must_bind_exact_candidate(self) -> None:
         mutation = copy.deepcopy(self.valid)
         mutation["validation"]["candidateSha"] = "f" * 40
@@ -135,7 +148,8 @@ class RepairConformanceTests(unittest.TestCase):
         self.assertEqual("https://json-schema.org/draft/2020-12/schema", schema["$schema"])
         for name in (
             "case", "profile", "principal", "receipt", "problem", "authority", "scope",
-            "transition", "lifecycle", "check", "candidate", "validation", "publication",
+            "transition", "lifecycle", "check", "validationEnvironment", "candidate",
+            "validation", "publication",
             "readback", "rollback", "binding",
         ):
             self.assertFalse(schema["$defs"][name]["additionalProperties"])

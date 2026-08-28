@@ -6,7 +6,7 @@ Twin Probe/Doctor (acts:false) -> diagnostic evidence
                          protected authority resolver
                                       |
                                       v
-isolated Repair Agent -> exact candidate -> independent Validator
+isolated Repair Agent -> prepared environment -> exact candidate -> independent Validator
                                               |
                                       protected Publisher
                                               |
@@ -21,6 +21,11 @@ The observer cannot mutate. The authority resolver does not implement. The
 implementer cannot validate or publish. The validator cannot alter the
 candidate. The publisher can apply only the attested candidate. The read-back
 observer cannot be the implementer or publisher.
+
+The prepared environment records only portable evidence: verification-profile,
+resolved-dependency and setup-evidence digests plus readiness. Subactor owns
+runtime commands such as `doctor-setup`; Wellmanifest does not prescribe a
+package manager, Make target or credential mechanism.
 
 Planfile should own deterministic work selection and lease one repair attempt.
 Todo2code may provide provenance-bound plans. Twin Probes may supply diagnostic
