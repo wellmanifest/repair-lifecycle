@@ -25,3 +25,11 @@ Production motivation and read-back:
 - if-uri/urirun PR #4 integrated as
   9a5596fd5441f86ed184b194041748439650ee97.
 - CI, host examples, Docker examples and 623 clean-clone Python tests passed.
+
+2026-08-28 independent publication read-back
+
+- Validator run: 33153607857 (success)
+- Review: 5049096910 by ifuri-validator-agent[bot]
+- Reviewed head: 15b5caffcad4ed8a1979227957d15a7a6b2d3548
+- Merge: 2301e0be9eb8d937b3ac41b7e1923fba63379a83
+- Remote implementation branch: absent

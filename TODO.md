@@ -6,5 +6,5 @@
 - [x] Publish through independent current-head validation.
 - [x] [`ticket-002`](project/ticket-002/README.md) — install the protected
   repair conformance workflow and prove autonomous Validator App delivery.
-- [ ] [`ticket-006`](project/ticket-006/README.md) — bind candidate checks to a
+- [x] [`ticket-006`](project/ticket-006/README.md) — bind candidate checks to a
   declared, ready and digest-addressed validation environment.

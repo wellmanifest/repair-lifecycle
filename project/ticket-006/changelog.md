@@ -10,3 +10,5 @@
   validation environment and bind all checks to its profile.
 - Added fail-closed conformance diagnostics and adversarial coverage for absent,
   unready and mismatched environments.
+- Closed after exact-head Validator approval, protected merge and default-branch
+  read-back confirmed publication.
