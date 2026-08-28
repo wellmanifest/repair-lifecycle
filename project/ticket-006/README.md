@@ -3,7 +3,7 @@
 - **ID**: ticket-006
 - **Owner**: unresolved:human
 - **Status**: IN_PROGRESS
-- **Workflow state**: EDIT
+- **Workflow state**: PUBLICATION
 - **Created**: 2026-08-28
 
 ## Goal and scope
@@ -17,15 +17,15 @@ publication. Keep tool-specific setup commands in the adopting runtime.
 
 - [x] AC-01: The user's autonomous continuation request is recorded as bounded
   session execution authorization.
-- [ ] AC-02: The candidate contract requires a ready validation environment
+- [x] AC-02: The candidate contract requires a ready validation environment
   with profile, dependency and setup-evidence digests.
-- [ ] AC-03: Every candidate check binds the same validation profile as the
+- [x] AC-03: Every candidate check binds the same validation profile as the
   prepared environment.
-- [ ] AC-04: Missing, unready or mismatched environments fail conformance with
+- [x] AC-04: Missing, unready or mismatched environments fail conformance with
   a stable diagnostic code.
-- [ ] AC-05: The normative spec explains that Wellmanifest defines evidence
+- [x] AC-05: The normative spec explains that Wellmanifest defines evidence
   while Subactor owns commands such as `doctor-setup`.
-- [ ] AC-06: Positive, adversarial, schema and governance checks pass.
+- [x] AC-06: Positive, adversarial, schema and governance checks pass.
 
 ## Participants
 

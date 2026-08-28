@@ -27,6 +27,15 @@ prepared reproducibly, without prescribing Make or Python commands.
 
 - Initialized the bounded ticket and recorded SESSION_EXECUTION_AUTHORIZATION
   from the request to execute this work.
+- Added the closed `candidate.environment` artifact with verification-profile,
+  resolved-dependency and setup-evidence digests plus fail-closed readiness.
+- Bound every candidate check to the prepared environment's profile digest.
+- Added `REPAIR-ENVIRONMENT-001`, an adversarial unprepared-environment
+  fixture and two direct semantic regression tests.
+- Documented that Wellmanifest owns portable evidence while Subactor owns
+  concrete setup commands and credentials.
+- Passed schema validation, nineteen unit tests, self-test, compilation, Ruff
+  and the adopted governance gate.
 
 ## Blockers
 

@@ -42,6 +42,15 @@ declared before execution. Candidate changes outside this scope fail closed.
 Generated shell commands or patches MUST NOT execute without the bounded
 runner and registered verification profile.
 
+Before candidate checks run, the runtime MUST prepare a declared validation
+environment and record immutable digests for the verification profile,
+resolved dependencies and setup evidence. The environment MUST be ready, and
+every candidate check MUST bind the same profile digest. An absent, failed or
+mismatched environment is an environment failure, not evidence that the
+candidate failed. Tool-specific commands, dependency installation and secret
+handling remain responsibilities of the adopting runtime; this standard owns
+only the portable evidence contract.
+
 ## 5. Lifecycle
 
 The normal path is:
@@ -59,8 +68,9 @@ resulting subject digest.
 ## 6. Exact candidate and completion
 
 Validation and publication MUST bind the candidate head SHA. Approval requires
-every deterministic candidate check to succeed. Publication MUST be performed
-by the declared publisher and produce a separate receipt.
+a ready digest-bound validation environment and every deterministic candidate
+check to succeed against its declared profile. Publication MUST be performed by
+the declared publisher and produce a separate receipt.
 
 `resolved` requires all of:
 

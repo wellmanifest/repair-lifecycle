@@ -50,6 +50,12 @@
     "changeDigest": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
     "changedPaths": ["autonom/pull_request_controller.py", "tests/test_pull_request_controller.py"],
     "worktreeReceiptDigest": "sha256:6666666666666666666666666666666666666666666666666666666666666666",
+    "environment": {
+      "profileDigest": "sha256:7777777777777777777777777777777777777777777777777777777777777777",
+      "dependencyDigest": "sha256:9999999999999999999999999999999999999999999999999999999999999999",
+      "setupEvidenceDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "ready": true
+    },
     "checks": [
       {"name": "unit", "conclusion": "success", "profileDigest": "sha256:7777777777777777777777777777777777777777777777777777777777777777", "evidenceDigest": "sha256:8888888888888888888888888888888888888888888888888888888888888888"}
     ]
