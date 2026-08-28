@@ -36,6 +36,8 @@ prepared reproducibly, without prescribing Make or Python commands.
   concrete setup commands and credentials.
 - Passed schema validation, nineteen unit tests, self-test, compilation, Ruff
   and the adopted governance gate.
+- Closed only after Validator App approval bound to `15b5caffcad4...` and
+  protected merge `2301e0be9eb8...` were read back from the default branch.
 
 ## Blockers
 
