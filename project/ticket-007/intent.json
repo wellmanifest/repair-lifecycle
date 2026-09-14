@@ -1,0 +1,89 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-007",
+  "summary": "Express the repair lifecycle and development auto-repair boundary in Policy DSL",
+  "workstream": "integration",
+  "classification": {
+    "kind": "BUG",
+    "priority": "P1",
+    "origin": "requested"
+  },
+  "allowedPaths": [
+    "project/ticket-007/**",
+    "TODO.md",
+    "project/TICKETS.md",
+    "spec/REPAIR_LIFECYCLE_STANDARD.md",
+    "tests/test_repair.py"
+  ],
+  "forbiddenPaths": [
+    "project/ticket-*/user-*.md",
+    "schemas/**",
+    "profiles/**",
+    "examples/**",
+    "src/**"
+  ],
+  "stacks": [
+    "python"
+  ],
+  "dependsOn": [],
+  "conflictsWith": [],
+  "integrationTicket": null,
+  "delivery": {
+    "acceptedBaseSha": "ecd0a1d560bb7844e4fff62acd65130f2f7b1e17",
+    "targetBranch": "main",
+    "outcome": "The repair lifecycle graph, its normative rules and the development-time auto-repair boundary are a parseable Policy DSL document kept equal to the checker by a test.",
+    "nonGoals": [
+      "No schema, example, profile, checker or diagnostic-code change.",
+      "No release and no registry publish."
+    ],
+    "complexity": "S",
+    "estimatedMinutes": 20,
+    "budgets": {
+      "maxImplementationFiles": 2,
+      "maxAffectedComponents": 1,
+      "maxPublicInterfaceChanges": 1,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Append section 8 with one Policy DSL fence projecting sections 1-6 and the exact TRANSITIONS table, add a development-time repair paragraph and rule REPAIR-DEV-001, and add a dependency-free unittest comparing the fence transitions with src/repair_check.py.",
+      "components": [
+        {
+          "name": "normative-spec",
+          "paths": [
+            "spec/REPAIR_LIFECYCLE_STANDARD.md",
+            "tests/test_repair.py"
+          ]
+        }
+      ],
+      "responsibilityChanges": false,
+      "interfaceChanges": [
+        "spec/REPAIR_LIFECYCLE_STANDARD.md gains section 8 (Policy DSL projection) and the normative development-time repair paragraph; existing requirements are unchanged."
+      ],
+      "dataChanges": [],
+      "ui": {
+        "impact": "none",
+        "states": [],
+        "evidence": []
+      },
+      "rollback": "Revert the commit; the spec returns to prose-only logic."
+    },
+    "runtimeDependencies": [],
+    "validation": [
+      {
+        "criterion": "AC-02",
+        "commands": [
+          "python3 -m unittest discover -s tests"
+        ],
+        "evidence": "Pending exact-head publication."
+      },
+      {
+        "criterion": "AC-03",
+        "commands": [
+          "./project/governance-check.sh --base origin/main --head HEAD --actor agent"
+        ],
+        "evidence": "Pending exact-head publication."
+      }
+    ]
+  }
+}

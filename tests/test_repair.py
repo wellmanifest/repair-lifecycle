@@ -27,6 +27,23 @@ class RepairConformanceTests(unittest.TestCase):
     def codes(self, document: dict) -> set[str]:
         return {finding.code for finding in repair_check.validate_document(document)}
 
+    def test_spec_policy_dsl_projection_matches_transition_table(self) -> None:
+        text = (ROOT / "spec" / "REPAIR_LIFECYCLE_STANDARD.md").read_text(encoding="utf-8")
+        fence = text.split("```dsl\n", 1)[1].split("\n```", 1)[0]
+        declared = {
+            (line.split()[1], line.split()[3])
+            for line in fence.splitlines()
+            if line.startswith("TRANSITION ")
+        }
+        states = {line.split()[1] for line in fence.splitlines() if line.startswith("STATE ")}
+        expected = {
+            (source, target)
+            for source, targets in repair_check.TRANSITIONS.items()
+            for target in targets
+        }
+        self.assertEqual(expected, declared)
+        self.assertEqual({state for edge in expected for state in edge}, states)
+
     def test_valid_case_and_profile_pass(self) -> None:
         self.assertEqual(set(), self.codes(self.valid))
         self.assertEqual(set(), self.codes(self.profile))
