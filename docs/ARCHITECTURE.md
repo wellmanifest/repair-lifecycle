@@ -32,3 +32,19 @@ Todo2code may provide provenance-bound plans. Twin Probes may supply diagnostic
 evidence. Vallm findings remain advisory. Koru or IDE automation belongs in a
 lower-trust experimental lane unless it produces the same isolated exact-head
 receipts.
+
+## Koru Autonomous Critical Incident Remediation
+
+Under critical hostile attacks (DDoS, volumetric flood, or memory exhaustion),
+the repair controller (Koru) executes an automated 5-stage protocol:
+1. **Dynamic Vector Shunting**: Immediately divert attack traffic vectors to
+   isolated tarpits / honeypots while preserving legitimate user traffic.
+2. **Twin Sandbox Reproduction**: Reproduce failures inside isolated OverlayFS
+   ephemeral worktrees without impacting production state.
+3. **Bounded Candidate Hotfix**: Generate and verify hotfixes within strictly
+   bounded tickets and governance checks (`GOV-PASS`).
+4. **Atomic Rolling Swap**: Deploy verified container instances with live synthetic
+   `/livez` validation and instant rollback on failure.
+5. **Attested Notification**: Dispatch cryptographic incident receipts via
+   `urirun-mail` connectors to system owners (Tomasz Sapletta Prototypowanie.pl).
+

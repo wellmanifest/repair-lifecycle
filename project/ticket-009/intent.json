@@ -1,0 +1,74 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-009",
+  "summary": "Standardize Koru real-time autonomous remediation and dynamic traffic shifting under critical attacks",
+  "workstream": "integration",
+  "classification": {
+    "kind": "SERVICE",
+    "priority": "P2",
+    "origin": "health"
+  },
+  "allowedPaths": [
+    "project/ticket-009/**",
+    "project/ticket-008/README.md",
+    "TODO.md",
+    "project/TICKETS.md",
+    "docs/ARCHITECTURE.md",
+    "docs/KORU_AUTONOMOUS_CRITICAL_INCIDENT_REMEDIATION.md"
+  ],
+  "forbiddenPaths": [
+    "project/ticket-*/user-*.md"
+  ],
+  "stacks": [],
+  "dependsOn": [],
+  "conflictsWith": [],
+  "integrationTicket": null,
+  "delivery": {
+    "acceptedBaseSha": "17fe37d9917b74e4a26eed43650355c447e7c098",
+    "targetBranch": "main",
+    "outcome": "Standardize Koru real-time autonomous remediation, dynamic traffic shifting under critical attacks, and fail-closed urirun-mail alerts.",
+    "nonGoals": [
+      "No breaking changes to generic repair-lifecycle profiles"
+    ],
+    "complexity": "S",
+    "estimatedMinutes": 30,
+    "budgets": {
+      "maxImplementationFiles": 5,
+      "maxAffectedComponents": 2,
+      "maxPublicInterfaceChanges": 0,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Add Koru real-time incident remediation and dynamic traffic shifting invariants to repair-lifecycle standard",
+      "components": [
+        {
+          "name": "repair-lifecycle-standard",
+          "paths": [
+            "docs/ARCHITECTURE.md",
+            "docs/KORU_AUTONOMOUS_CRITICAL_INCIDENT_REMEDIATION.md"
+          ]
+        }
+      ],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {
+        "impact": "none",
+        "states": [],
+        "evidence": []
+      },
+      "rollback": "Revert documentation changes."
+    },
+    "runtimeDependencies": [],
+    "validation": [
+      {
+        "criterion": "AC-01",
+        "commands": [
+          "./project/governance-check.sh"
+        ],
+        "evidence": "Governance check passes."
+      }
+    ]
+  }
+}
