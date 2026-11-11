@@ -4,6 +4,7 @@ import copy
 import importlib.util
 import json
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -26,6 +27,12 @@ class RepairConformanceTests(unittest.TestCase):
 
     def codes(self, document: dict) -> set[str]:
         return {finding.code for finding in repair_check.validate_document(document)}
+
+    def test_python_modules_stay_below_500_lines(self) -> None:
+        for folder in ("src", "tests"):
+            for py_path in sorted((ROOT / folder).glob("*.py")):
+                count = len(py_path.read_text(encoding="utf-8").splitlines())
+                self.assertLess(count, 500, f"{py_path.name} has {count} lines")
 
     def test_spec_policy_dsl_projection_matches_transition_table(self) -> None:
         text = (ROOT / "spec" / "REPAIR_LIFECYCLE_STANDARD.md").read_text(encoding="utf-8")
@@ -81,6 +88,68 @@ class RepairConformanceTests(unittest.TestCase):
         mutation = copy.deepcopy(self.valid)
         mutation["lifecycle"]["attempt"] = 4
         self.assertIn(repair_check.SCOPE, self.codes(mutation))
+
+    def test_bool_and_non_integer_budgets_fail_closed_without_crashing(self) -> None:
+        for field in ("maxFiles", "maxAttempts"):
+            for bad_value in (True, False, "bad"):
+                mutation = copy.deepcopy(self.valid)
+                mutation["scope"][field] = bad_value
+                self.assertIn(repair_check.SCOPE, self.codes(mutation))
+        for bad_attempt in (True, False, "bad"):
+            mutation = copy.deepcopy(self.valid)
+            mutation["lifecycle"]["attempt"] = bad_attempt
+            self.assertIn(repair_check.SCOPE, self.codes(mutation))
+
+    def test_unhashable_or_empty_or_backslash_paths_fail_closed(self) -> None:
+        for bad_paths in ([{}], [""], ["autonom\\bad.py"], [" autonom/x.py"], ["."]):
+            mutation = copy.deepcopy(self.valid)
+            mutation["scope"]["allowedPaths"] = bad_paths
+            self.assertIn(repair_check.SCOPE, self.codes(mutation))
+        mutation = copy.deepcopy(self.valid)
+        mutation["candidate"]["changedPaths"] = ["", "autonom\\bad.py"]
+        self.assertIn(repair_check.SCOPE, self.codes(mutation))
+        dup = copy.deepcopy(self.valid)
+        dup["candidate"]["changedPaths"] = [
+            "autonom/pull_request_controller.py",
+            "autonom/pull_request_controller.py",
+        ]
+        self.assertIn(repair_check.CANDIDATE, self.codes(dup))
+
+    def test_duplicate_json_keys_and_symlinks_are_rejected(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_dir = Path(tmp)
+            dup_file = tmp_dir / "dup.json"
+            dup_file.write_text(
+                '{"schema":"wellmanifest.repair/case/v1","schema":"wellmanifest.repair/case/v1"}',
+                encoding="utf-8",
+            )
+            findings = repair_check.load_and_validate(dup_file)
+            self.assertEqual([repair_check.SYNTAX], [item.code for item in findings])
+
+            link_file = tmp_dir / "linked.json"
+            link_file.symlink_to(self.valid_path)
+            link_findings = repair_check.load_and_validate(link_file)
+            self.assertEqual([repair_check.SYNTAX], [item.code for item in link_findings])
+            self.assertEqual(1, repair_check.main(["validate", str(link_file)]))
+
+            sub_dir = tmp_dir / "scan"
+            sub_dir.mkdir()
+            (sub_dir / "nested-link").symlink_to(self.valid_path.parent)
+            self.assertEqual(1, repair_check.main(["validate", str(sub_dir)]))
+
+    def test_schema_parity_identifiers_and_enums_are_enforced(self) -> None:
+        mutation = copy.deepcopy(self.valid)
+        mutation["repairId"] = "bad-id"
+        mutation["correlationId"] = "short"
+        mutation["problem"]["severity"] = "extreme"
+        mutation["problem"]["evidenceDigests"].append(mutation["problem"]["evidenceDigests"][0])
+        codes = self.codes(mutation)
+        self.assertIn(repair_check.SYNTAX, codes)
+
+        bad_profile = copy.deepcopy(self.profile)
+        bad_profile["version"] = "v1"
+        bad_profile["ownership"]["adopts"].append("wellmanifest/autonomy")
+        self.assertIn(repair_check.PROFILE, self.codes(bad_profile))
 
     def test_candidate_checks_cannot_be_skipped(self) -> None:
         mutation = copy.deepcopy(self.valid)

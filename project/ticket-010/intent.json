@@ -1,0 +1,77 @@
+{
+  "schema": "new-project.intent/v3",
+  "ticket": "ticket-010",
+  "summary": "Modularize and harden repair lifecycle checker",
+  "workstream": "integration",
+  "classification": {
+    "kind": "BUG",
+    "priority": "P1",
+    "origin": "regression"
+  },
+  "allowedPaths": [
+    "project/ticket-010/**",
+    "TODO.md",
+    "project/TICKETS.md",
+    "src/**",
+    "tests/**"
+  ],
+  "forbiddenPaths": [
+    "project/ticket-*/user-*.md"
+  ],
+  "stacks": [],
+  "dependsOn": [],
+  "conflictsWith": [],
+  "integrationTicket": null,
+  "delivery": {
+    "acceptedBaseSha": "1186e2b100b0705ee974dd17b10fbcaa69f9fc2f",
+    "targetBranch": "main",
+    "outcome": "Modularize src/repair_check.py under 500 lines and harden semantic validation against bool-as-int acceptance, non-int budget ValueError crashes, unhashable scope path TypeError crashes, empty/control/backslash paths, duplicate JSON keys, symlink escapes, and JSON Schema pattern/enum drift.",
+    "nonGoals": [
+      "No breaking changes to existing valid or invalid repair lifecycle fixtures or schemas."
+    ],
+    "complexity": "S",
+    "estimatedMinutes": 30,
+    "budgets": {
+      "maxImplementationFiles": 5,
+      "maxAffectedComponents": 2,
+      "maxPublicInterfaceChanges": 0,
+      "maxRuntimeDependencies": 0
+    },
+    "architecture": {
+      "status": "accepted",
+      "decision": "Split repair_check.py into repair_primitives.py, repair_validators.py, and CLI/loader repair_check.py while preserving every public symbol and finding code.",
+      "components": [
+        {
+          "name": "repair-checker",
+          "paths": [
+            "src/repair_check.py",
+            "src/repair_primitives.py",
+            "src/repair_validators.py",
+            "tests/test_repair.py"
+          ]
+        }
+      ],
+      "responsibilityChanges": false,
+      "interfaceChanges": [],
+      "dataChanges": [],
+      "ui": {
+        "impact": "none",
+        "states": [],
+        "evidence": []
+      },
+      "rollback": "Revert the ticket-010 commit on main."
+    },
+    "runtimeDependencies": [],
+    "validation": [
+      {
+        "criterion": "AC-01",
+        "commands": [
+          "python3 -m unittest discover -s tests -v",
+          "python3 src/repair_check.py self-test",
+          "./project/governance-check.sh"
+        ],
+        "evidence": "Unit tests, repair_check self-test, modularity budget, and governance check pass."
+      }
+    ]
+  }
+}
