@@ -16,4 +16,5 @@ This file indexes governance tickets without taking ownership of
 | **ticket-008** | [`README.md`](./ticket-008/README.md) | [`preprompt.md`](./ticket-008/preprompt.md) | - |  [`ai-claude.md`](./ticket-008/ai-claude.md) |  [`ai-claude-logs.txt`](./ticket-008/ai-claude-logs.txt) | [`changelog.md`](./ticket-008/changelog.md) |
 | **ticket-009** | [`README.md`](./ticket-009/README.md) | - | - | - | - | - |
 | **ticket-010** | [`README.md`](./ticket-010/README.md) | - | - | - | - | - |
+| **ticket-012** | [`README.md`](./ticket-012/README.md) | - | - | - | - | - |
 <!-- AUTO:TICKET_INDEX:END -->
